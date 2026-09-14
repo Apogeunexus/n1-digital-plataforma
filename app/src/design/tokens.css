@@ -1,0 +1,225 @@
+/**
+ * Design tokens — marca N1 Digital.
+ *
+ * Every colour a component uses comes from here. A component that hardcodes a
+ * hex value breaks the dark theme silently, because the dark theme is nothing
+ * but the second half of each declaration below.
+ *
+ * Both themes live in ONE declaration per token via `light-dark()`, which reads
+ * the inherited `color-scheme`. The alternative — a duplicated `[data-tema]`
+ * block — means every new token has to be added in two places, and the day
+ * someone forgets is the day the dark theme starts lying.
+ *
+ * The rationale for each choice is in docs/05-design-system/DIRECAO-VISUAL.md.
+ * Two rules from there are load-bearing: the accent is UNIQUE (it never carries
+ * meaning), and red is RESERVED.
+ */
+
+:root {
+  /* Tema único, noturno. O produto não oferece escolha por enquanto, e o preto
+     é a base da marca — 45% da composição no manual.
+     As declarações abaixo continuam em `light-dark()` de propósito: a metade
+     clara é a versão que volta no dia em que o tema claro voltar, e
+     `design/tokens.test.ts` segue conferindo o contraste das DUAS, para que ela
+     não apodreça enquanto espera. */
+  color-scheme: dark;
+
+  /* ---- base: neutro puro, como o manual pede. A marca é preto (45%), branco
+     (25%) e #2A2A2A (20%); o neutro morno anterior brigava com o roxo.
+     No escuro a superfície é MAIS CLARA que o fundo: elevação no escuro é luz,
+     não sombra — e o fundo é o preto da marca. */
+  --cor-tinta: light-dark(#1a1a1a, #f5f5f5);
+  /* Every ratio below is measured against the WORST background this token sits
+     on, and the numbers are asserted by design/tokens.test.ts — the previous
+     values were computed against a --cor-papel that a later revision changed,
+     and nothing caught it. */
+  --cor-tinta-fraca: light-dark(#5f5f5f, #afafaf);
+  --cor-tinta-tenue: light-dark(#8a8a8a, #737373); /* NON-TEXT only: dots, dividers, rules */
+  /* No escuro, a página é PRETA e cada camada acima dela clareia um degrau:
+     papel/página #000000 → cartão #151515 → destaque #212121. A revisão
+     anterior tinha o cartão MAIS ESCURO que a página, e um cartão escuro sobre
+     fundo claro lê como buraco, não como superfície. */
+  --cor-papel: light-dark(#f4f4f5, #000000); /* o preto de 45% da marca */
+  --cor-superficie: light-dark(#ffffff, #151515);
+  --cor-superficie-2: light-dark(#fafafa, #000000); /* a página, e o fundo de realce sobre o cartão */
+  /* O elemento em foco de uma tela — a caixa do Chat — um degrau acima do cartão. */
+  --cor-superficie-3: light-dark(#ffffff, #212121);
+  --cor-traco: light-dark(#e4e4e7, #303030);
+  --cor-traco-forte: light-dark(#d4d4d8, #4a4a4a);
+
+  /* ---- acento: o roxo da marca, e ele é ÚNICO. Ação primária, navegação
+     ativa, foco, link. Nada mais — no manual o roxo é 10% da composição, e é
+     assim que ele continua sendo notado.
+     O gradiente da marca vai de #2C0263 a #9601C5; a interface usa as duas
+     pontas como acento e acento-forte, porque um gradiente não tem contraste
+     verificável. */
+  --cor-acento: light-dark(#9601c5, #c084fc); /* AA: 6.76 no papel, 6.59 na superfície */
+  --cor-acento-forte: light-dark(#7a00a3, #d8a6f5);
+  --cor-acento-fraco: light-dark(#f7ecfd, #2c0263); /* #2C0263: a ponta escura da marca */
+  --cor-acento-texto: light-dark(#ffffff, #1a1a1a); /* AA: 6.76 / 6.59 */
+  /* O gradiente completo existe para a marca, nunca para texto. */
+  --gradiente-marca: linear-gradient(135deg, #2c0263 0%, #9601c5 100%);
+  /* A ação principal: o mesmo roxo da marca, mais claro para ler sobre ele. */
+  --gradiente-acao: linear-gradient(135deg, #7c3aed 0%, #9601c5 100%);
+  /* A tinta sobre os DOIS gradientes. Eles são roxo escuro nos dois temas, então
+     a tinta é branca nos dois — `--cor-acento-texto` serve ao acento chapado,
+     que no escuro é lilás claro e pede tinta escura. Trocar um pelo outro
+     apagava as iniciais do Avatar e o texto do botão primário no escuro.
+     AA: branco sobre #7c3aed 6.3, sobre #9601c5 7.2, sobre #2c0263 15.9. */
+  --cor-gradiente-texto: light-dark(#ffffff, #ffffff);
+
+  /* ---- red is RESERVED: destructive action, real error, failed Execution ---- */
+  --cor-perigo: light-dark(#b91c1c, #fca5a5);
+  --cor-perigo-forte: light-dark(#991b1b, #fecaca);
+  /* The ink ON the danger fill. White works on the light red (6.47) and is
+     illegible on the light-pink dark red (1.90), so it is a token, not a
+     literal — this is the button that confirms every destructive act. */
+  --cor-perigo-texto-contraste: light-dark(#ffffff, #450a0a); /* AA: 6.47 / 8.51 */
+  --cor-perigo-fraco: light-dark(#fef2f2, #450a0a);
+  --cor-perigo-traco: light-dark(#fecaca, #7f1d1d);
+  --cor-perigo-texto: light-dark(#7f1d1d, #fecaca);
+
+  --cor-sucesso: light-dark(#15803d, #4ade80);
+  --cor-sucesso-fraco: light-dark(#f0fdf4, #052e16);
+  --cor-sucesso-traco: light-dark(#bbf7d0, #14532d);
+  --cor-sucesso-texto: light-dark(#14532d, #bbf7d0);
+
+  --cor-atencao: light-dark(#b45309, #fbbf24);
+  --cor-atencao-fraco: light-dark(#fffbeb, #451a03);
+  --cor-atencao-traco: light-dark(#fde68a, #78350f);
+  --cor-atencao-texto: light-dark(#78350f, #fde68a);
+
+  --cor-info: light-dark(#0369a1, #7dd3fc);
+  --cor-info-fraco: light-dark(#f0f9ff, #082f49);
+  --cor-info-traco: light-dark(#bae6fd, #075985);
+  --cor-info-texto: light-dark(#075985, #bae6fd);
+
+  /* ---- A4.3: the CATEGORY decides the closing, not the Status name.
+     `concluido` and `fechado` are both terminal; one colour for both would
+     erase the difference between "ended well" and "ended". ---- */
+  --cor-cat-nao-iniciado: light-dark(#78716c, #a8a29e);
+  --cor-cat-em-andamento: light-dark(#b45309, #fbbf24);
+  --cor-cat-concluido: light-dark(#15803d, #4ade80);
+  --cor-cat-fechado: light-dark(#475569, #94a3b8);
+
+  /* ---- Deal situation. `perdido` is NOT red: losing a Deal is a normal
+     outcome of the funnel, not a system error. Red here would train the team
+     to read the funnel as failure. ---- */
+  --cor-neg-aberto: light-dark(#0369a1, #7dd3fc);
+  --cor-neg-ganho: light-dark(#15803d, #4ade80);
+  --cor-neg-perdido: light-dark(#57534e, #a8a29e);
+
+  /* ---- Conversation state (A4.5) ---- */
+  --cor-cxe-aberta: light-dark(#0369a1, #7dd3fc);
+  --cor-cxe-pendente: light-dark(#b45309, #fbbf24);
+  --cor-cxe-resolvida: light-dark(#78716c, #a8a29e);
+
+  /* ---- Execution state. `aguardandoAprovacao` gets violet — the only state
+     that demands a human, and the only place violet appears. ---- */
+  --cor-exe-pendente: light-dark(#a8a29e, #78716c);
+  --cor-exe-executando: light-dark(#0369a1, #7dd3fc);
+  --cor-exe-aguardando: light-dark(#3730a3, #a5b4fc); /* índigo: o roxo virou acento */
+  --cor-exe-concluida: light-dark(#15803d, #4ade80);
+  --cor-exe-falhou: light-dark(#b91c1c, #fca5a5);
+  --cor-exe-cancelada: light-dark(#78716c, #a8a29e);
+
+  /* ---- Lifecycle seals (A4.1). The codes are invariant in gender; only the
+     text around them agrees. ---- */
+  --cor-selo-arquivado: light-dark(#b45309, #fbbf24);
+  --cor-selo-arquivado-fundo: light-dark(#fffbeb, #451a03);
+  --cor-selo-lixeira: light-dark(#b91c1c, #fca5a5);
+  --cor-selo-lixeira-fundo: light-dark(#fef2f2, #450a0a);
+  --cor-selo-mesclado: light-dark(#3730a3, #a5b4fc);
+  --cor-selo-mesclado-fundo: light-dark(#eef2ff, #1e1b4b);
+  --cor-selo-rascunho: light-dark(#57534e, #d6d3d1);
+  /* Was identical to --cor-papel / --cor-superficie: the seal had no fill at
+     all against the surface it sits on. */
+  --cor-selo-rascunho-fundo: light-dark(#ebe9e7, #3a3533); /* AA: 6.30 / 8.12 */
+  --cor-selo-pausado: light-dark(#c2410c, #fdba74);
+  --cor-selo-pausado-fundo: light-dark(#fff7ed, #431407);
+  --cor-selo-pendente: light-dark(#0369a1, #7dd3fc);
+  --cor-selo-pendente-fundo: light-dark(#f0f9ff, #082f49);
+
+  /* ---- Domain hue in the navigation. Desaturated on purpose: the domain
+     orients, it does not shout. Never used in content. ---- */
+  --cor-dom-estrutura: light-dark(#475569, #94a3b8);
+  --cor-dom-crm: light-dark(#b45309, #fbbf24);
+  --cor-dom-ia: light-dark(#3730a3, #a5b4fc);
+  --cor-dom-paineis: light-dark(#0f766e, #5eead4);
+
+  /* ---- Actor kinds. The Agent carries a distinct mark: an action can be "em
+     nome de" (B18), and the reader must never confuse who acted. ---- */
+  --cor-ator-membro: light-dark(#57534e, #d6d3d1);
+  --cor-ator-agente: light-dark(#3730a3, #a5b4fc);
+  --cor-ator-automacao: light-dark(#0f766e, #5eead4);
+  --cor-ator-integracao: light-dark(#0369a1, #7dd3fc);
+  --cor-ator-sistema: light-dark(#6b6560, #57534e); /* was #a8a29e: white on it was 2.52 */
+  /* The initials ON the avatar fill. In the dark the fills are light, so the
+     ink inverts — a literal `text-white` was illegible in 5 of 10 combinations. */
+  --cor-ator-texto: light-dark(#ffffff, #1c1917); /* AA: worst pair 5.47 / 9.47 */
+  --cor-ator-sistema-texto: light-dark(#ffffff, #ffffff); /* AA: 5.74 / 7.63 */
+
+  /* ---- shadow means REAL elevation: side panel, dialog, menu. A card in a
+     list does not float, so it gets no shadow at all. In the dark a light
+     shadow reads as dirt, so it deepens instead. ---- */
+  --sombra-elevada: light-dark(
+    0 4px 16px -4px rgb(0 0 0 / 0.12),
+    0 4px 16px -4px rgb(0 0 0 / 0.6)
+  );
+  --sombra-flutuante: light-dark(
+    0 12px 32px -8px rgb(0 0 0 / 0.18),
+    0 12px 32px -8px rgb(0 0 0 / 0.75)
+  );
+
+  /* ---- typography: one interface family, one mono for identifiers.
+     Hierarchy comes from weight and size, never from a second family. ---- */
+  /* SF Pro Display é a tipografia da marca. Ela não se distribui por CDN: nos
+     aparelhos Apple vem do sistema, e fora deles a Inter carregada por
+     `next/font` assume — mesma métrica geométrica, mesmo peso visual. */
+  --fonte-interface: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont,
+    var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --fonte-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --texto-xs: 0.6875rem; /* 11px — meta, counts */
+  --texto-sm: 0.75rem; /* 12px — dense table cells */
+  --texto-base: 0.875rem; /* 14px — body */
+  --texto-md: 1rem; /* 16px — section title */
+  --texto-lg: 1.125rem; /* 18px — screen title */
+  --texto-xl: 1.375rem; /* 22px — the only large size in the product */
+
+  --peso-normal: 400;
+  --peso-medio: 500;
+  --peso-forte: 600;
+
+  --altura-densa: 1.35;
+  --altura-corpo: 1.55;
+
+  /* ---- spacing: 4px scale ---- */
+  --esp-1: 0.25rem;
+  --esp-2: 0.5rem;
+  --esp-3: 0.75rem;
+  --esp-4: 1rem;
+  --esp-5: 1.25rem;
+  --esp-6: 1.5rem;
+  --esp-8: 2rem;
+  --esp-12: 3rem;
+
+  /* ---- density: a 32px row keeps ~40 lines on screen and still clears the
+     minimum touch target. Below this, density becomes hostility. ---- */
+  --altura-linha-tabela: 2rem;
+  --altura-controle: 2rem;
+  --altura-controle-grande: 2.25rem;
+
+  /* ---- radii: 6px on surfaces, 4px on controls. No pills. ---- */
+  --raio-controle: 0.25rem;
+  --raio-superficie: 0.375rem;
+  --raio-selo: 0.1875rem;
+
+  /* The scrim behind a modal. A literal rgb() would ignore the theme. */
+  --cor-cortina: light-dark(rgb(0 0 0 / 0.32), rgb(0 0 0 / 0.7));
+
+  --foco-anel: 2px;
+  --foco-deslocamento: 2px;
+}
+
+

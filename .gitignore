@@ -1,0 +1,3 @@
+# dependências e builds ficam em cada pacote (app/.gitignore)
+.DS_Store
+*.log

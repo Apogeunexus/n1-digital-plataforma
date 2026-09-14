@@ -1,0 +1,336 @@
+@import "tailwindcss";
+@import "../design/tokens.css";
+
+/**
+ * Fase 5 — the design tokens are the single source of colour, type and space.
+ * This file only bridges them into Tailwind's theme and sets the few global
+ * rules that no component should have to repeat.
+ */
+
+@theme inline {
+  --font-sans: var(--fonte-interface);
+  --font-mono: var(--fonte-mono);
+
+  --color-tinta: var(--cor-tinta);
+  --color-tinta-fraca: var(--cor-tinta-fraca);
+  --color-tinta-tenue: var(--cor-tinta-tenue);
+  --color-papel: var(--cor-papel);
+  --color-superficie: var(--cor-superficie);
+  --color-superficie-2: var(--cor-superficie-2);
+  --color-superficie-3: var(--cor-superficie-3);
+  --color-traco: var(--cor-traco);
+  --color-traco-forte: var(--cor-traco-forte);
+
+  --color-acento: var(--cor-acento);
+  --color-acento-forte: var(--cor-acento-forte);
+  --color-acento-fraco: var(--cor-acento-fraco);
+  --color-acento-texto: var(--cor-acento-texto);
+
+  --color-perigo: var(--cor-perigo);
+  --color-perigo-forte: var(--cor-perigo-forte);
+  --color-perigo-fraco: var(--cor-perigo-fraco);
+  --color-perigo-traco: var(--cor-perigo-traco);
+  --color-perigo-texto: var(--cor-perigo-texto);
+
+  --color-sucesso: var(--cor-sucesso);
+  --color-sucesso-fraco: var(--cor-sucesso-fraco);
+  --color-sucesso-traco: var(--cor-sucesso-traco);
+  --color-sucesso-texto: var(--cor-sucesso-texto);
+
+  --color-atencao: var(--cor-atencao);
+  --color-atencao-fraco: var(--cor-atencao-fraco);
+  --color-atencao-traco: var(--cor-atencao-traco);
+  --color-atencao-texto: var(--cor-atencao-texto);
+
+  --color-info: var(--cor-info);
+  --color-info-fraco: var(--cor-info-fraco);
+  --color-info-traco: var(--cor-info-traco);
+  --color-info-texto: var(--cor-info-texto);
+
+  --text-xs: var(--texto-xs);
+  --text-sm: var(--texto-sm);
+  --text-base: var(--texto-base);
+  --text-md: var(--texto-md);
+  --text-lg: var(--texto-lg);
+  --text-xl: var(--texto-xl);
+
+  --radius-controle: var(--raio-controle);
+  --radius-superficie: var(--raio-superficie);
+  --radius-selo: var(--raio-selo);
+
+  --shadow-elevada: var(--sombra-elevada);
+  --shadow-flutuante: var(--sombra-flutuante);
+}
+
+body {
+  background: var(--cor-papel);
+  color: var(--cor-tinta);
+  font-family: var(--fonte-interface);
+  font-size: var(--texto-base);
+  line-height: var(--altura-corpo);
+}
+
+/* Focus is never removed — ui-ptbr.md requires the whole product to be
+   keyboard-navigable, and an invisible focus ring is an unusable keyboard. */
+:focus-visible {
+  outline: var(--foco-anel) solid var(--cor-acento);
+  outline-offset: var(--foco-deslocamento);
+  border-radius: var(--raio-controle);
+}
+
+/* The identifier is copied, compared and read aloud: proportional here is a
+   functional error, not a taste one. */
+.identificador {
+  font-family: var(--fonte-mono);
+  font-size: var(--texto-xs);
+  letter-spacing: 0.01em;
+}
+
+/* Respect whoever asked for less movement. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* A table that scrolls horizontally keeps its head fixed; without this the
+   column names leave the screen exactly when the rows get wide. */
+.tabela-densa thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--cor-superficie-2);
+}
+
+/* ------------------------------------------------------------------ marca */
+
+/**
+ * A aura da capa do manual: o roxo da marca vazando por trás do conteúdo, sem
+ * nunca virar fundo de texto. Fica em `::before`/`::after` e `pointer-events:
+ * none` para não roubar clique de nada que esteja em cima.
+ */
+.aura-marca {
+  position: relative;
+  isolation: isolate;
+}
+
+.aura-marca::before {
+  content: "";
+  position: absolute;
+  top: -55%;
+  right: -8%;
+  width: 46rem;
+  height: 46rem;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--cor-acento) 30%, transparent) 0%,
+    color-mix(in srgb, var(--cor-acento) 8%, transparent) 45%,
+    transparent 68%
+  );
+  filter: blur(30px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Os riscos de luz na diagonal, que na capa vêm de uma foto em movimento. */
+.aura-marca::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    115deg,
+    transparent 0 22px,
+    color-mix(in srgb, var(--cor-tinta) 4%, transparent) 22px 23px,
+    transparent 23px 60px
+  );
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ------------------------------------------------------------------- orbe */
+
+.orbe {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+/** Cada anel respira no seu tempo: iguais, viram um piscar só, que incomoda. */
+.orbe-anel {
+  position: absolute;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--cor-acento) 45%, transparent);
+  animation: orbe-respira 6s ease-in-out infinite;
+}
+
+.orbe-anel:nth-child(2) {
+  animation-delay: -2s;
+}
+
+.orbe-anel:nth-child(3) {
+  animation-delay: -4s;
+}
+
+/** O anel tracejado gira devagar: é o que dá a leitura de "ouvindo". */
+.orbe-varredura {
+  position: absolute;
+  border-radius: 9999px;
+  border: 1px dashed color-mix(in srgb, var(--cor-acento) 55%, transparent);
+  animation: orbe-gira 24s linear infinite;
+}
+
+.orbe-nucleo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 9999px;
+  background: var(--gradiente-marca);
+  box-shadow:
+    0 0 40px color-mix(in srgb, var(--cor-acento) 55%, transparent),
+    0 0 120px color-mix(in srgb, var(--cor-acento) 28%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 35%, transparent);
+  animation: orbe-respira 6s ease-in-out infinite;
+}
+
+.orbe:hover .orbe-nucleo,
+.orbe:focus-visible .orbe-nucleo {
+  box-shadow:
+    0 0 56px color-mix(in srgb, var(--cor-acento) 75%, transparent),
+    0 0 160px color-mix(in srgb, var(--cor-acento) 40%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 45%, transparent);
+}
+
+@keyframes orbe-respira {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+@keyframes orbe-gira {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --------------------------------------------------------- fundo em vídeo */
+
+/**
+ * O laço de vídeo do herói. Ele é DECORAÇÃO: fica atrás de tudo, não recebe
+ * clique, e o conteúdo por cima nunca depende dele para ser legível — a
+ * cortina abaixo garante o contraste mesmo no quadro mais claro do laço.
+ */
+.video-fundo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  z-index: -2;
+}
+
+/**
+ * A cortina: escurece o lado do texto e deixa o vídeo aparecer à direita, onde
+ * a orbe está. Sem ela, um quadro claro do laço passaria por baixo do título e
+ * derrubaria o contraste — que é exatamente o que os testes de token proíbem
+ * para cor sólida, e que um vídeo poderia furar por trás.
+ */
+.video-cortina {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    /* Fecha nas duas pontas e abre no meio-direita, onde a orbe fica: os
+       riscos de neon do laço são mais claros justamente nas bordas, e é ali
+       que o título, à esquerda, e os pilares, à direita, precisam de fundo. */
+    linear-gradient(
+      100deg,
+      var(--cor-superficie) 0%,
+      color-mix(in srgb, var(--cor-superficie) 92%, transparent) 34%,
+      color-mix(in srgb, var(--cor-superficie) 58%, transparent) 56%,
+      color-mix(in srgb, var(--cor-superficie) 62%, transparent) 74%,
+      color-mix(in srgb, var(--cor-superficie) 88%, transparent) 100%
+    ),
+    linear-gradient(to top, var(--cor-superficie) 0%, transparent 45%);
+}
+
+/* Quem pediu menos movimento recebe o quadro parado, não o laço. */
+@media (prefers-reduced-motion: reduce) {
+  .video-fundo {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------- palco do quadro */
+
+/*
+ * O brilho de fundo do quadro de Negócios. É decoração, então fica atrás de
+ * tudo (`-1`) e sem interceptar clique: arrastar um card é a ação principal
+ * desta tela e não pode esbarrar num efeito.
+ */
+.palco-quadro {
+  position: relative;
+  isolation: isolate;
+}
+
+.palco-quadro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 8% -10%, color-mix(in srgb, var(--cor-acento) 16%, transparent), transparent 70%),
+    radial-gradient(50rem 36rem at 95% 110%, color-mix(in srgb, var(--cor-acento) 12%, transparent), transparent 70%);
+}
+
+/* O card em foco: a borda acesa é o que o olho procura na coluna. */
+.card-negocio {
+  border: 1px solid var(--cor-traco);
+  background: var(--cor-superficie);
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.card-negocio:hover,
+.card-negocio:focus-visible {
+  border-color: var(--cor-acento);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--cor-acento) 40%, transparent),
+    0 8px 28px -12px color-mix(in srgb, var(--cor-acento) 55%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-negocio {
+    transition: none;
+  }
+}
+
+/* Construtor de Agentes: paleta própria da tela, escopada na raiz dela. */
+.agent-builder {
+  --ab-fundo: #000000;
+  --ab-painel: #101012;
+  --ab-campo: #19191d;
+  --ab-card: #17171a;
+  --ab-elevado: #212126;
+  --ab-borda: #303036;
+  --ab-borda-campo: #3a3a42;
+  --ab-texto: #f5f5f5;
+  --ab-texto-2: #afafaf;
+  --ab-texto-3: #86868f; /* pedido: #777780 — dava 4.0:1 sobre o card; este dá AA (4.7) */
+  --ab-roxo: #a970ff;
+  --ab-roxo-forte: #7c3aed;
+  --ab-roxo-translucido: rgba(169, 112, 255, 0.12);
+  --ab-alteracao: #f59e0b;
+}
